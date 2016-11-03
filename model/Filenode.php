@@ -13,11 +13,11 @@ class Filenode extends \atomar\core\BeanModel {
     /**
      * Grants a user access to a file. By default this includes all IO permissions
      *
-     * @param RedBean_SimpleModel $user the user that is being granted access
+     * @param \model\User $user the user that is being granted access
      * @param array $access the access granted to the user: read, write, delete
      * @return boolean true if successful
      */
-    public function grant_user_access($user, $access = array()) {
+    public function grant_user_access(\model\User $user, $access = array()) {
         $defaults = array('read' => '1', 'write'=>'1', 'delete' => '1');
         $access = array_merge($defaults, $access);
         $fileauth = \R::findOne('fileauth', ' user_id=? ', array($user->id));
@@ -66,11 +66,11 @@ class Filenode extends \atomar\core\BeanModel {
      * If the access parameter is left empty this function will return true if the user has been granted
      * access to the file regardless of the granular permissions.
      *
-     * @param RedBean_SimpleModel $user the user to be authenticated.
+     * @param \model\User $user the user to be authenticated.
      * @param array $access the access permissions that are being asked for. e.g. read/write/delete
      * @return boolean true if the user has access to the file
      */
-    public function authenticate($user, $access = array()) {
+    public function authenticate(\model\User $user, array $access = array()) {
         // grant access if no specific permissions were added to the file
         if (!count($this->bean->sharedPermissionList) && !count($this->bean->sharedfileauthList)) return true;
 

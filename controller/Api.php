@@ -16,6 +16,10 @@ use atomar\core\Logger;
  * @package files\controller
  */
 class Api extends ApiController {
+    /**
+     * @var FileManager
+     */
+    private $fm;
 
     /**
      * Initializes an upload from the file drop
@@ -28,7 +32,7 @@ class Api extends ApiController {
 
         // TODO: use $path if it is defined
 
-        $file = Files::get_file_by_hash($hash);
+        $file = $this->fm->getFileByHash($hash);
         if (!$file || $file->is_uploaded == '0') {
             // trash broken file
             if (!$file) {
@@ -52,12 +56,12 @@ class Api extends ApiController {
             $file->name_searchable = str_replace('_', ' ', $file->name);
             $file->created_at = db_date();
             $file->created_by = Auth::$user;
-            $file->data_store = Files::data_store_type();
+            $file->data_store = $this->fm->dataStoreName();
             unset($chunks);
 
             // store new file
             if (store($file)) {
-                $upload_url = Files::get_upload_url($file, $estimated_upload_time);
+                $upload_url = $this->fm->generateUploadURL($file, $estimated_upload_time);
                 if ($upload_url) {
                     $response = array(
                         'status' => 'success',
@@ -99,7 +103,7 @@ class Api extends ApiController {
         if ($file->id) {
             $file->is_uploaded = '1';
             store($file);
-            if (Files::post_process_upload($file)) {
+            if ($this->fm->postProcessUpload($file)) {
                 $response = array(
                     'status' => 'success',
                     'fid' => $file->id
@@ -129,7 +133,7 @@ class Api extends ApiController {
         if ($node->id) {
             if ($node->authenticate(Auth::$user, array('read' => 1))) {
                 $view = !!$view;
-                Files::download_file($node->file, $view);
+                $this->fm->downloadFile($node->file, $view);
             } else {
                 set_error('You do not have permission to view that file');
             }
@@ -232,20 +236,17 @@ class Api extends ApiController {
      * Allows you to perform any additional actions before post requests are processed
      * @param array $matches
      */
-    protected function setup_post($matches = array())
-    {
-
+    protected function setup_post($matches = array()) {
+        $this->fm = new FileManager(new LocalDataStore());
     }
 
     /**
      * Allows you to perform any additional actions before get requests are processed
      * @param array $matches
      */
-    protected function setup_get($matches = array())
-    {
-
+    protected function setup_get($matches = array()) {
+        $this->fm = new FileManager(new LocalDataStore());
     }
-
 
 }
 

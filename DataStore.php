@@ -1,72 +1,52 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: joel
- * Date: 11/2/16
- * Time: 10:06 PM
- */
 
 namespace files\controller;
 
 
-use RedBean_SimpleModel;
-
-abstract class DataStore {
+interface DataStore {
     /**
      * Performs any initialization required by the data store
      */
-    public function init() {
-        
-    }
+    public function init();
 
     /**
      * returns the file meta data
-     * @param  RedBean_SimpleModel $file
+     * @param  \File $file
      * @return array
      */
-    public function read_file_meta($file) {
-        return array();
-    }
+    public function getMeta(\File $file);
 
     /**
      * generates an upload url for the file
-     * @param  RedBean_SimpleModel $file
+     * @param  \File $file
      * @param  int $ttl
      * @param bool $return_as_object should return the upload object rather than the url if set to true
      * @return string
      */
-    public function upload_url($file, $ttl, $return_as_object = false) {
-        return '';
-    }
+    public function getUploadURL(\File $file, int $ttl, bool $return_as_object = false);
 
     /**
      * Performs any extra actions on a file after it has been uploaded
      *
-     * @param RedBean_SimpleModel $file the uploaded file
+     * @param \File $file the uploaded file
      * @return boolean true if processing was successful
      */
-    public function post_process_upload($file) {
-        return true;
-    }
+    public function postProcessUpload(\File $file);
 
     /**
      * returns a download url for the file
      *
-     * @param RedBean_SimpleModel $file the file to be downloaded
+     * @param \File $file the file to be downloaded
      * @param int $ttl
      * @return string the download link
      */
-    public function download_url($file, $ttl) {
-        return '';
-    }
+    public function getDownloadURL(\File $file, int $ttl);
 
     /**
      * prints the raw file data to the client and exists the script.
      *
-     * @param RedBean_SimpleModel $file the file to be downloaded
+     * @param \File $file the file to be downloaded
      * @param boolean $view_in_browser if set to true the server will attempt to tell the browser to display the file instead of downloading it.
      */
-    public function download($file, $view_in_browser = false) {
-
-    }
+    public function download(\File $file, bool $view_in_browser = false);
 }

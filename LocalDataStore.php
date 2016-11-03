@@ -1,20 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: joel
- * Date: 11/2/16
- * Time: 10:08 PM
- */
 
 namespace files\controller;
 
 
 use atomar\Atomar;
-use RedBean_SimpleModel;
 
-class LocalDataStore extends DataStore {
+/**
+ * Stores files on the local disk
+ * Class LocalDataStore
+ * @package files\controller
+ */
+class LocalDataStore implements DataStore {
     
-    public function upload_url($file, $ttl, $return_as_object = false) {
+    public function getUploadURL(\File $file, int $ttl, bool $return_as_object = false) {
         $upload = \R::dispense('fileupload');
         $upload->token = md5($file->file_path . $file->id . $ttl);
         $upload->file = $file;
@@ -31,16 +29,16 @@ class LocalDataStore extends DataStore {
         }
     }
 
-    public function post_process_upload($file) {
-        $meta = $this->read_file_meta($file);
+    public function postProcessUpload(\File $file) {
+        $meta = $this->getMeta($file);
         $file->size = $meta['content_length'];
         $file->type = $meta['content_type'];
         return store($file);
     }
 
-    public function read_file_meta($file) {
+    public function getMeta(\File $file) {
         // NOTE: finfo_open is not available on older versions of php.
-        $path = $this->realpath($file);
+        $path = $this->absolutePath($file);
         $info = pathinfo($path);
         $meta = array();
         $meta['content_length'] = filesize($path);
@@ -58,13 +56,17 @@ class LocalDataStore extends DataStore {
      * @param RedBean_SimpleModel $file
      * @return string the path to the file
      */
-    public function realpath($file) {
+    public function absolutePath(\File $file) {
         return realpath(Atomar::$config['files'] . $file->file_path);
     }
 
-    public function download($file, $view_in_browser = false) {
+    /**
+     * @param RedBean_SimpleModel $file
+     * @param bool $view_in_browser
+     */
+    public function download(\File $file, bool $view_in_browser = false) {
         if ($file->id) {
-            $path = $this->realpath($file);
+            $path = $this->absolutePath($file);
             if (file_exists($path)) {
                 if ($view_in_browser) {
                     $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -87,5 +89,24 @@ class LocalDataStore extends DataStore {
             header('HTTP/1.1 404 Not Found');
         }
         exit;
+    }
+
+    /**
+     * Performs any initialization required by the data store
+     */
+    public function init()
+    {
+        
+    }
+
+    /**
+     * returns a download url for the file
+     *
+     * @param RedBean_SimpleModel $file the file to be downloaded
+     * @param int $ttl
+     * @return string the download link
+     */
+    public function getDownloadURL(\File $file, int $ttl) {
+        return '';
     }
 }
