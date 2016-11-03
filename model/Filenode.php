@@ -3,6 +3,7 @@
 namespace model;
 
 use atomar\core\Auth;
+use atomar\core\BeanModel;
 use atomar\core\Logger;
 
 /**
@@ -11,7 +12,7 @@ use atomar\core\Logger;
  * 
  * In general these are what will be used outside of this module when referring to a file.
  */
-class Filenode extends \atomar\core\BeanModel {
+class Filenode extends BeanModel {
 
     /**
      * Grants a user access to a file. By default this includes all IO permissions

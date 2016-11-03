@@ -1,6 +1,7 @@
 <?php
 
 namespace model;
+use atomar\core\BeanModel;
 use RedBean_SimpleModel;
 
 /**
@@ -9,7 +10,7 @@ use RedBean_SimpleModel;
  * 
  * In general these will never be used outside of this module.
  */
-class File extends \atomar\core\BeanModel {
+class File extends BeanModel {
     
     /**
      * Attaches this file to a RedBean_SimpleModel.
