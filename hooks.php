@@ -1,6 +1,6 @@
 <?php
 
-namespace files\controller;
+namespace files;
 
 /**
  * Implements hook_permission()

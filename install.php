@@ -1,7 +1,6 @@
 <?php
 
-namespace files\controller;
-use atomar\core\Logger;
+namespace files;
 
 /**
  * Implements hook_uninstall()
