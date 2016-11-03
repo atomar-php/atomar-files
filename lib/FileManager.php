@@ -108,24 +108,24 @@ class FileManager {
      * Use this method if you already have a file on the server that you would like to import.
      *
      * @param string $file_name the name of the file including extension
-     * @param string $file_source_path the path to the file that will be imported
-     * @param string $file_destination the relative file destination path
+     * @param string $file_path the path to the file that will be imported
+     * @param string $destination_dir the relative file destination directory
      * @return \File
      */
-    public function importFile(string $file_name, string $file_source_path, string $file_destination) {
-        $hash = md5_file($file_source_path);
+    public function importFile(string $file_name, string $file_path, string $destination_dir) {
+        $hash = md5_file($file_path);
         $file = self::getFileByHash($hash);
         if (!$file || $file->is_uploaded == '0') {
             // trash broken file
             if (!$file) $file = \R::dispense('file');
 
             // build new file object
-            $file->size = filesize($file_source_path); // file size in bytes
+            $file->size = filesize($file_path); // file size in bytes
             $file->is_uploaded = '1';
             $file->hash = $hash;
             $file->name = $file_name;
             $file->ext = strtolower(end(explode('.', $file->name)));
-            $file->file_path = trim($file_destination, '/') . '/' . $file->hash . '.' . $file->ext;
+            $file->file_path = trim($destination_dir, '/') . '/' . $file->hash . '.' . $file->ext;
             $file->name_searchable = str_replace('_', ' ', $file->name);
             $file->created_at = db_date();
             $file->created_by = Auth::$user;
@@ -139,7 +139,7 @@ class FileManager {
                     $dest_path = Atomar::$config['files'] . $upload->file->file_path;
                     $dir = dirname($dest_path);
                     if (!is_dir($dir)) mkdir($dir, 0770, true);
-                    rename($file_source_path, $dest_path);
+                    rename($file_path, $dest_path);
                     \R::trash($upload);
 
                     // finish

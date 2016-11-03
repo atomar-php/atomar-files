@@ -223,7 +223,7 @@ class Api extends ApiController {
                 \R::trash($upload);
                 return true;
             } catch (\Exception $e) {
-                // likely this is a file system error. e.g. not writeable
+                // likely this is a file system error. e.g. not writable
                 Logger::log_error('CFileDropAPI:PUT: The file could not be created', $e->getMessage());
                 \R::trash($upload);
                 return new UploadError('Failed to write output file');
