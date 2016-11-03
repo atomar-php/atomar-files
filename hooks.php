@@ -49,9 +49,9 @@ function url() {
  */
 function libraries() {
     return array (
-        'DataStore.php',
-        'LocalDataStore.php',
-        'FileDropAPI.php'
+        'lib/DataStore.php',
+        'lib/LocalDataStore.php',
+        'lib/FileDropAPI.php'
     );
 }
 
