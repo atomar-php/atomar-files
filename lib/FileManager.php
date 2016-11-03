@@ -134,7 +134,7 @@ class FileManager {
 
             if (store($file)) {
                 // move file
-                $upload = $this->generateUploadURL($file, 10, true);
+                $upload = $this->generateUploadURL($file->box(), 10, true);
                 if ($upload) {
                     // move the file
                     $dest_path = Atomar::$config['files'] . $upload->file->file_path;
@@ -144,8 +144,8 @@ class FileManager {
                     \R::trash($upload);
 
                     // finish
-                    if ($this->postProcessUpload($file)) {
-                        return $file;
+                    if ($this->postProcessUpload($file->box())) {
+                        return $file->box();
                     }
                 }
             } else {
@@ -153,7 +153,7 @@ class FileManager {
                 return null;
             }
         } else {
-            return $file;
+            return $file->box();
         }
         return null;
     }
