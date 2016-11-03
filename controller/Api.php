@@ -61,7 +61,8 @@ class Api extends ApiController {
 
             // store new file
             if (store($file)) {
-                $upload_url = $this->fm->generateUploadURL($file, $estimated_upload_time);
+                $upload = $this->fm->generateUpload($file, $estimated_upload_time);
+                $upload_url = '/!/file_drop/upload?token=' . $upload->token;
                 if ($upload_url) {
                     $response = array(
                         'status' => 'success',
@@ -173,6 +174,7 @@ class Api extends ApiController {
      */
     function post_upload($token) {
         Logger::log_notice('uploading file with token', $token);
+        // TODO: the FileManager should handle fetching an upload object
         $upload = \R::findOne('fileupload', 'token=?', array($token));
         if ($upload) {
             Logger::log_notice('found upload request');

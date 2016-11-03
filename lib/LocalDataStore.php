@@ -13,20 +13,16 @@ use model\File;
  */
 class LocalDataStore implements DataStore {
     
-    public function getUploadURL(File $file, int $ttl, bool $return_as_object = false) {
+    public function generateUpload(File $file, int $ttl) {
         $upload = \R::dispense('fileupload');
         $upload->token = md5($file->file_path . $file->id . $ttl);
         $upload->file = $file;
         $upload->ttl = $ttl;
         $upload->created_at = db_date();
         if (store($upload)) {
-            if ($return_as_object) {
-                return $upload;
-            } else {
-                return '/!/file_drop/upload?token=' . $upload->token;
-            }
+            return $upload;
         } else {
-            return false;
+            return null;
         }
     }
 

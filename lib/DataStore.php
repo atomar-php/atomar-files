@@ -4,6 +4,7 @@ namespace files\controller;
 
 
 use model\File;
+use model\Fileupload;
 
 interface DataStore {
     /**
@@ -19,13 +20,13 @@ interface DataStore {
     public function getMeta(File $file);
 
     /**
-     * generates an upload url for the file
-     * @param  File $file
-     * @param  int $ttl
-     * @param bool $return_as_object should return the upload object rather than the url if set to true
-     * @return string
+     * Generates an upload object for the file.
+     *
+     * @param  File $file the file to be uploaded
+     * @param  int $ttl the time before this upload expires
+     * @return null|Fileupload the upload bean
      */
-    public function getUploadURL(File $file, int $ttl, bool $return_as_object = false);
+    public function generateUpload(File $file, int $ttl);
 
     /**
      * Performs any extra actions on a file after it has been uploaded

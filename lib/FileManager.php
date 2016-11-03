@@ -7,6 +7,7 @@ use atomar\core\Auth;
 use atomar\core\Logger;
 use atomar\core\Templator;
 use model\File;
+use model\Fileupload;
 
 /**
  * Class Files
@@ -134,7 +135,7 @@ class FileManager {
 
             if (store($file)) {
                 // move file
-                $upload = $this->generateUploadURL($file->box(), 10, true);
+                $upload = $this->generateUpload($file->box(), 10);
                 if ($upload) {
                     // move the file
                     $dest_path = Atomar::$config['files'] . $upload->file->file_path;
@@ -180,19 +181,18 @@ class FileManager {
     }
 
     /**
-     * Generate a temporary upload url
+     * Generate a temporary upload object
      *
      * @param File $file The file bean that will be uploaded
      * @param int $ttl The length of time the upload url will be active. Default is 5 minutes.
-     * @param bool $return_as_object will return the upload object instead of just the url if set to true. Default is false
-     * @return string The temporary upload url.
+     * @return null|Fileupload The temporary upload object
      */
-    public function generateUploadURL(File $file, int $ttl = 300, bool $return_as_object = false) {
+    public function generateUpload(File $file, int $ttl = 300) {
         $ds = $this->getFileDataStore($file);
         if($ds != null) {
-            return $ds->getUploadURL($file, $ttl, $return_as_object);
+            return $ds->generateUpload($file, $ttl);
         }
-        return false;
+        return null;
     }
 
     /**
