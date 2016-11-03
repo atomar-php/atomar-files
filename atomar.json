@@ -1,0 +1,7 @@
+{
+  "name": "files",
+  "version": "1.0.0",
+  "description": "An advanced file management system that supports uploading and basic CRUD operations.",
+  "keywords": "file, upload",
+  "author": "Joel Lonbeck <joel@neutrinographics.com>"
+}

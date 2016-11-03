@@ -1,0 +1,252 @@
+<?php
+
+namespace files\controller;
+
+use atomar\Atomar;
+use atomar\core\ApiController;
+use atomar\core\APIError;
+use atomar\core\Auth;
+use atomar\core\Logger;
+
+/**
+ * This api performs most of the grunt work for the file drop component.
+ * In order to use this api in your application you'll need to set up a route that points to this api.
+ * See the hooks.php file in this module for an example.
+ * Class Api
+ * @package files\controller
+ */
+class Api extends ApiController {
+
+    /**
+     * Initializes an upload from the file drop
+     * @param string $hash the md5 sum of the content being uploaded
+     * @param null $path the relative path within the data-store where this file will be saved
+     * @return array
+     */
+    function get_init($hash, $path=null) {
+        Auth::has_authentication('files-upload');
+
+        // TODO: use $path if it is defined
+
+        $file = Files::get_file_by_hash($hash);
+        if (!$file || $file->is_uploaded == '0') {
+            // trash broken file
+            if (!$file) {
+                $file = \R::dispense('file');
+            }
+
+            $file->size = $_REQUEST['size']; // file size in bytes
+            $file->is_uploaded = '0';
+
+            // Perform bandwidth profiling
+            $speed = $_REQUEST['speed'] * 1000 / 8.0; // connection speed in kbs converted to bytes/second
+            $min_upload_time = Atomar::get_variable('file_drop_min_upload_time', 10); // give at least 10 seconds to upload
+            $estimated_upload_time = ceil($file->size / $speed * 2) + $min_upload_time; // seconds .. give twice the estimated time add add the minimum time to allow http overhead and in case their speed changes.
+
+            // Pre-populate file data
+            $file->hash = $hash;
+            $file->name = $_REQUEST['filename'];
+            $chunks = explode('.', $file->name);
+            $file->ext = strtolower(end($chunks));
+            $file->file_path = $file->hash . '.' . $file->ext; // trim($path, '/') . '/' . // this was prepended here.
+            $file->name_searchable = str_replace('_', ' ', $file->name);
+            $file->created_at = db_date();
+            $file->created_by = Auth::$user;
+            $file->data_store = Files::data_store_type();
+            unset($chunks);
+
+            // store new file
+            if (store($file)) {
+                $upload_url = Files::get_upload_url($file, $estimated_upload_time);
+                if ($upload_url) {
+                    $response = array(
+                        'status' => 'success',
+                        'fid' => $file->id,
+                        'upload_url' => $upload_url,
+                        'message' => 'The upload url has been successfully generated. It will expire in ' . $estimated_upload_time . ' seconds'
+                    );
+                } else {
+                    $response = array(
+                        'status' => 'error',
+                        'message' => 'The upload url could not be generated.'
+                    );
+                }
+            } else {
+                $response = array(
+                    'status' => 'error',
+                    'message' => 'the file could not be created'
+                );
+            }
+        } else {
+            // duplicate file.
+            $response = array(
+                'status' => 'duplicate',
+                'fid' => $file->id,
+                'message' => 'This file has already been uploaded'
+            );
+        }
+        return $response;
+    }
+
+    /**
+     * Confirms the successful upload of a file
+     * @param int $fid the file id
+     * @return array
+     */
+    function get_confirm($fid) {
+        Auth::has_authentication('files-upload');
+        $file = \R::load('file', $fid);
+        if ($file->id) {
+            $file->is_uploaded = '1';
+            store($file);
+            if (Files::post_process_upload($file)) {
+                $response = array(
+                    'status' => 'success',
+                    'fid' => $file->id
+                );
+            } else {
+                $response = array(
+                    'status' => 'error',
+                    'message' => 'the file was uploaded but could not be processed'
+                );
+            }
+        } else {
+            $response = array(
+                'status' => 'error',
+                'message' => 'the file could not be found'
+            );
+        }
+        return $response;
+    }
+
+    /**
+     * Downloads a file
+     * @param int $id the file node id
+     * @param int $view indicates if the file should be viewed in the browser instead of downloading.
+     */
+    function get_download($id, $view=null) {
+        $node = \R::load('filenode', $id);
+        if ($node->id) {
+            if ($node->authenticate(Auth::$user, array('read' => 1))) {
+                $view = !!$view;
+                Files::download_file($node->file, $view);
+            } else {
+                set_error('You do not have permission to view that file');
+            }
+        } else {
+            set_notice('File does not exist');
+        }
+        $this->go_back();
+    }
+
+    /**
+     * Deletes a file node.
+     * Note: this does not actually delete the file. It only deletes the file node.
+     *
+     * @param int $id the file node id
+     */
+    function get_delete($id) {
+        $node = \R::load('filenode', $id);
+        if ($node->id) {
+            if ($node->authenticate(Auth::$user, array('delete' => 1))) {
+                \R::trash($node);
+                set_success('The file has been deleted');
+            } else {
+                set_error('You do not have permission to delete that file');
+            }
+        }
+    }
+
+    function get_upload() {
+
+    }
+
+    /**
+     * Receives upload data
+     * @param string $token the upload token
+     */
+    function post_upload($token) {
+        Logger::log_notice('uploading file with token', $token);
+        $upload = \R::findOne('fileupload', 'token=?', array($token));
+        if ($upload) {
+            Logger::log_notice('found upload request');
+            // validate upload
+            if (time() - strtotime($upload->created_at) > $upload->ttl) {
+                Logger::log_warning('Files:PUT: upload expired', array(
+                    'fileupload' => $upload->export(),
+                    'request' => $_REQUEST
+                ));
+                \R::trash($upload);
+                return new UploadError('Upload token has expired');
+            }
+            Logger::log_notice('preparing output');
+            // prepare output
+            $output = Atomar::$config['files'] . $upload->file->file_path;
+            $dir = dirname($output);
+            try {
+                if (!is_dir($dir)) {
+                    mkdir($dir, 0770, true);
+                }
+                Logger::log_notice('opening file');
+                // write the file
+                if (!($putdata = fopen("php://input", "r"))) {
+                    Logger::log_error('Files:PUT: failed to get PUT data', array(
+                        'fileupload' => $upload->export(),
+                        'request' => $_REQUEST
+                    ));
+                    \R::trash($upload);
+                    return new UploadError('Failed to read PUT data');
+                }
+                Logger::log_notice('opening output', $output);
+                if (!($fp = fopen($output, 'w'))) {
+                    Logger::log_error('Files:PUT: failed to open output file', array(
+                        'output' => $output,
+                        'fileupload' => $upload->export(),
+                        'request' => $_REQUEST
+                    ));
+                    \R::trash($upload);
+                    return new UploadError('Failed to open output file');
+                }
+                Logger::log_notice('writing data');
+                while ($data = fread($putdata, 1024)) {
+                    fwrite($fp, $data);
+                }
+                fclose($fp);
+                fclose($putdata);
+                Logger::log_notice('done writing file');
+                \R::trash($upload);
+                return true;
+            } catch (\Exception $e) {
+                // likely this is a file system error. e.g. not writeable
+                Logger::log_error('CFileDropAPI:PUT: The file could not be created', $e->getMessage());
+                \R::trash($upload);
+                return new UploadError('Failed to write output file');
+            }
+        } else {
+            Logger::log_warning('CFileDropAPI:PUT: invalid upload request', $_REQUEST);
+            return new UploadError('non-registered upload request');
+        }
+    }
+
+    /**
+     * Allows you to perform any additional actions before post requests are processed
+     * @param array $matches
+     */
+    protected function setup_post($matches = array())
+    {
+
+    }
+
+    /**
+     * Allows you to perform any additional actions before get requests are processed
+     * @param array $matches
+     */
+    protected function setup_get($matches = array())
+    {
+
+    }
+
+
+}
+
+class UploadError extends APIError {}
