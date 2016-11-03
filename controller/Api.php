@@ -136,11 +136,13 @@ class Api extends ApiController {
                 $this->fm->downloadFile($node->file, $view);
             } else {
                 set_error('You do not have permission to view that file');
+                header('HTTP/1.1 403 Forbidden', true, 403);
+                exit;
             }
         } else {
-            set_notice('File does not exist');
+            header('HTTP/1.1 404 Not Found', true, 404);
+            exit;
         }
-        $this->go_back();
     }
 
     /**
