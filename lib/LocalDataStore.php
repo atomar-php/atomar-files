@@ -91,8 +91,7 @@ class LocalDataStore implements DataStore {
     /**
      * Performs any initialization required by the data store
      */
-    public function init()
-    {
+    public function init() {
         
     }
 

@@ -41,9 +41,9 @@ class FileManager {
      */
     public function getFileDataStore(File $file) {
         if($file && $file->id) {
-            $class = $file->data_store;
+            $class_name = $file->data_store;
             try {
-                $instance = new $class();
+                $instance = new $class_name;
                 if ($instance instanceof DataStore) {
                     $instance->init();
                     return $instance;
