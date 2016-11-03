@@ -124,7 +124,7 @@ SQL;
      * @deprecated use break_access() instead
      */
     public function delete() {
-        break_access();
+        $this->break_access();
     }
 
     /**
