@@ -51,7 +51,7 @@ function libraries() {
     return array (
         'lib/DataStore.php',
         'lib/LocalDataStore.php',
-        'lib/FileDropAPI.php'
+        'lib/FileManager.php'
     );
 }
 
