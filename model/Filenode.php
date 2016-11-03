@@ -17,11 +17,11 @@ class Filenode extends BeanModel {
     /**
      * Grants a user access to a file. By default this includes all IO permissions
      *
-     * @param \model\User $user the user that is being granted access
+     * @param User $user the user that is being granted access
      * @param array $access the access granted to the user: read, write, delete
      * @return boolean true if successful
      */
-    public function grant_user_access(\model\User $user, $access = array()) {
+    public function grant_user_access(User $user, $access = array()) {
         $defaults = array('read' => '1', 'write'=>'1', 'delete' => '1');
         $access = array_merge($defaults, $access);
         $fileauth = \R::findOne('fileauth', ' user_id=? ', array($user->id));
@@ -74,7 +74,7 @@ class Filenode extends BeanModel {
      * @param array $access the access permissions that are being asked for. e.g. read/write/delete
      * @return boolean true if the user has access to the file
      */
-    public function authenticate(\model\User $user, array $access = array()) {
+    public function authenticate(User $user, array $access = array()) {
         // grant access if no specific permissions were added to the file
         if (!count($this->bean->sharedPermissionList) && !count($this->bean->sharedfileauthList)) return true;
 

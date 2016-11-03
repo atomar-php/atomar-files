@@ -6,6 +6,7 @@ use atomar\Atomar;
 use atomar\core\Auth;
 use atomar\core\Logger;
 use atomar\core\Templator;
+use model\File;
 
 /**
  * Class Files
@@ -35,10 +36,10 @@ class FileManager {
     /**
      * Returns an initialized instance of the DataStore used to store the given file.
      *
-     * @param \File $file
+     * @param File $file
      * @returns DataStore
      */
-    public function getFileDataStore(\File $file) {
+    public function getFileDataStore(File $file) {
         if($file && $file->id) {
             $class = $file->data_store;
             try {
@@ -57,10 +58,10 @@ class FileManager {
     /**
      * Much like fetch_file except it only returns the meta data without the body content
      *
-     * @param \File $file The file to read
+     * @param File $file The file to read
      * @return mixed Returns the file object on success and FALSE on failure.
      */
-    public function fetchFileMeta(\File $file) {
+    public function fetchFileMeta(File $file) {
         $ds = $this->getFileDataStore($file);
         if($ds != null) {
             return $ds->getMeta($file);
@@ -71,11 +72,11 @@ class FileManager {
     /**
      * Retrieves a download link for the file
      *
-     * @param \File $file the file to be downloaded
+     * @param File $file the file to be downloaded
      * @param int $ttl the length of time until the download link expires
      * @return string the download link
      */
-    public function generateDownloadUrl(\File $file, int $ttl = 300) {
+    public function generateDownloadUrl(File $file, int $ttl = 300) {
         $ds = $this->getFileDataStore($file);
         if($ds != null) {
             return $ds->getDownloadURL($file, $ttl);
@@ -87,10 +88,10 @@ class FileManager {
      * Downloads the file
      * this differs from get_download_url in that this method prints the raw file data directly and exits the script
      *
-     * @param \File $file the file to be downloaded
+     * @param File $file the file to be downloaded
      * @param boolean $view_in_browser if set to true the server will attempt to tell the browser to display the file instead of downloading it.
      */
-    public function downloadFile(\File $file, bool $view_in_browser = false) {
+    public function downloadFile(File $file, bool $view_in_browser = false) {
         $ds = $this->getFileDataStore($file);
         if($ds != null) {
             $ds->download($file, $view_in_browser);
@@ -110,7 +111,7 @@ class FileManager {
      * @param string $file_name the name of the file including extension
      * @param string $file_path the path to the file that will be imported
      * @param string $destination_dir the relative file destination directory
-     * @return \File
+     * @return File
      */
     public function importFile(string $file_name, string $file_path, string $destination_dir) {
         $hash = md5_file($file_path);
@@ -163,7 +164,7 @@ class FileManager {
      * This is not 100% accurate but the odds of a hash collision is absurdly low.
      *
      * @param string $hash md5 sum of the file
-     * @return \File the file or null;
+     * @return File the file or null;
      */
     public function getFileByHash(string $hash) {
         return \R::findOne('file', 'hash=?', array($hash));
@@ -181,12 +182,12 @@ class FileManager {
     /**
      * Generate a temporary upload url
      *
-     * @param \File $file The file bean that will be uploaded
+     * @param File $file The file bean that will be uploaded
      * @param int $ttl The length of time the upload url will be active. Default is 5 minutes.
      * @param bool $return_as_object will return the upload object instead of just the url if set to true. Default is false
      * @return string The temporary upload url.
      */
-    public function generateUploadURL(\File $file, int $ttl = 300, bool $return_as_object = false) {
+    public function generateUploadURL(File $file, int $ttl = 300, bool $return_as_object = false) {
         $ds = $this->getFileDataStore($file);
         if($ds != null) {
             return $ds->getUploadURL($file, $ttl, $return_as_object);
@@ -197,10 +198,10 @@ class FileManager {
     /**
      * Performs extra operations on the file after it has been uploaded.
      *
-     * @param \File $file the file that was uploaded.
+     * @param File $file the file that was uploaded.
      * @return bool
      */
-    public function postProcessUpload(\File $file) {
+    public function postProcessUpload(File $file) {
         $ds = $this->getFileDataStore($file);
         if($ds != null) {
             try {

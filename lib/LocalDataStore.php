@@ -4,6 +4,7 @@ namespace files\controller;
 
 
 use atomar\Atomar;
+use model\File;
 
 /**
  * Stores files on the local disk
@@ -12,7 +13,7 @@ use atomar\Atomar;
  */
 class LocalDataStore implements DataStore {
     
-    public function getUploadURL(\File $file, int $ttl, bool $return_as_object = false) {
+    public function getUploadURL(File $file, int $ttl, bool $return_as_object = false) {
         $upload = \R::dispense('fileupload');
         $upload->token = md5($file->file_path . $file->id . $ttl);
         $upload->file = $file;
@@ -29,14 +30,14 @@ class LocalDataStore implements DataStore {
         }
     }
 
-    public function postProcessUpload(\File $file) {
+    public function postProcessUpload(File $file) {
         $meta = $this->getMeta($file);
         $file->size = $meta['content_length'];
         $file->type = $meta['content_type'];
         return store($file);
     }
 
-    public function getMeta(\File $file) {
+    public function getMeta(File $file) {
         // NOTE: finfo_open is not available on older versions of php.
         $path = $this->absolutePath($file);
         $info = pathinfo($path);
@@ -53,18 +54,14 @@ class LocalDataStore implements DataStore {
     /**
      * Returns the fully qualified path to the file
      *
-     * @param RedBean_SimpleModel $file
+     * @param File $file
      * @return string the path to the file
      */
-    public function absolutePath(\File $file) {
+    public function absolutePath(File $file) {
         return realpath(Atomar::$config['files'] . $file->file_path);
     }
 
-    /**
-     * @param RedBean_SimpleModel $file
-     * @param bool $view_in_browser
-     */
-    public function download(\File $file, bool $view_in_browser = false) {
+    public function download(File $file, bool $view_in_browser = false) {
         if ($file->id) {
             $path = $this->absolutePath($file);
             if (file_exists($path)) {
@@ -106,7 +103,7 @@ class LocalDataStore implements DataStore {
      * @param int $ttl
      * @return string the download link
      */
-    public function getDownloadURL(\File $file, int $ttl) {
+    public function getDownloadURL(File $file, int $ttl) {
         return '';
     }
 }
