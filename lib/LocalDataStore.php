@@ -58,7 +58,8 @@ class LocalDataStore implements DataStore {
      * @return string the path to the file
      */
     public function absolutePath(File $file) {
-        return realpath(Atomar::$config['files'] . $file->file_path);
+        $path = Atomar::$config['files'] . $file->file_path;
+        return realpath($path);
     }
 
     public function download(File $file, bool $view_in_browser = false) {
