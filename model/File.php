@@ -1,5 +1,8 @@
 <?php
 
+namespace model;
+use RedBean_SimpleModel;
+
 /**
  * Represents a single file in a data store.
  * Files are low level objects that manage the data of a file. 

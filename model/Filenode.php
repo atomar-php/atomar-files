@@ -1,4 +1,7 @@
 <?php
+
+namespace model;
+
 use atomar\core\Auth;
 use atomar\core\Logger;
 
