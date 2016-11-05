@@ -17,7 +17,7 @@ class Filenode extends BeanModel {
     /**
      * Grants a user access to a file. By default this includes all IO permissions
      *
-     * @param User $user the user that is being granted access
+     * @param null|User $user the user that is being granted access
      * @param array $access the access granted to the user: read, write, delete
      * @return boolean true if successful
      */
