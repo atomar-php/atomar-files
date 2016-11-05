@@ -154,7 +154,7 @@ class FileManager {
                 return null;
             }
         } else {
-            return $file->box();
+            return $file;
         }
         return null;
     }
