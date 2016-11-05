@@ -1,6 +1,6 @@
 <?php
 
-namespace files\controller;
+namespace files;
 
 
 use atomar\Atomar;
@@ -95,7 +95,7 @@ class LocalDataStore implements DataStore {
     /**
      * returns a download url for the file
      *
-     * @param RedBean_SimpleModel $file the file to be downloaded
+     * @param File $file the file to be downloaded
      * @param int $ttl
      * @return string the download link
      */

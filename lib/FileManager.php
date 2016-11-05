@@ -1,6 +1,6 @@
 <?php
 
-namespace files\controller;
+namespace files;
 
 use atomar\Atomar;
 use atomar\core\Auth;

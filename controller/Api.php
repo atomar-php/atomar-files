@@ -7,6 +7,8 @@ use atomar\core\ApiController;
 use atomar\core\APIError;
 use atomar\core\Auth;
 use atomar\core\Logger;
+use files\FileManager;
+use files\LocalDataStore;
 
 /**
  * This api performs most of the grunt work for the file drop component.
