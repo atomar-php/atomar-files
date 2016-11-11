@@ -3,7 +3,6 @@
 namespace files;
 
 use atomar\core\HookReceiver;
-use atomar\core\Logger;
 
 class Hooks extends HookReceiver
 {
@@ -110,8 +109,7 @@ SQL;
             set_success('Files installed');
         } catch (\Exception $e) {
             \R::rollback();
-            Logger::log_error('Failed to install Files', $e->getMessage());
-            set_error('Files not installed');
+            throw $e;
         }
     }
 
@@ -131,13 +129,9 @@ SQL;
         try {
             \R::exec($sql);
             \R::commit();
-            set_success('Files uninstalled');
         } catch (\Exception $e) {
             \R::rollback();
-            Logger::log_error('Failed to install Files', $e->getMessage());
-            set_error('Files not uninstalled');
-            return false;
+            throw new $e;
         }
-
     }
 }
