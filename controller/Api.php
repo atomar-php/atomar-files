@@ -108,7 +108,7 @@ class Api extends ApiController {
         if ($file->id) {
             $file->is_uploaded = '1';
             store($file);
-            if ($this->fm->postProcessUpload($file)) {
+            if ($this->fm->postProcessUpload($file->box())) {
                 $response = array(
                     'status' => 'success',
                     'fid' => $file->id
