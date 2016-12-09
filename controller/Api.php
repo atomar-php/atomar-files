@@ -136,9 +136,9 @@ class Api extends ApiController {
     function get_download($id, $view=null) {
         $node = \R::load('filenode', $id);
         if ($node->id) {
-            if ($node->authenticate(Auth::$user, array('read' => 1))) {
+            if ($node->authenticate(Auth::$user->box(), array('read' => 1))) {
                 $view = !!$view;
-                $this->fm->downloadFile($node->file, $view);
+                $this->fm->downloadFile($node->file->box(), $view);
             } else {
                 set_error('You do not have permission to view that file');
                 header('HTTP/1.1 403 Forbidden', true, 403);
@@ -159,7 +159,7 @@ class Api extends ApiController {
     function get_delete($id) {
         $node = \R::load('filenode', $id);
         if ($node->id) {
-            if ($node->authenticate(Auth::$user, array('delete' => 1))) {
+            if ($node->authenticate(Auth::$user->box(), array('delete' => 1))) {
                 \R::trash($node);
                 set_success('The file has been deleted');
             } else {
