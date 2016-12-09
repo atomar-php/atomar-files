@@ -34,8 +34,9 @@ class LocalDataStore implements DataStore {
     }
 
     public function getMeta(File $file) {
-        // NOTE: finfo_open is not available on older versions of php.
         $path = $this->absolutePath($file);
+        if(!file_exists($path)) return null;
+
         $info = pathinfo($path);
         $meta = array();
         $meta['content_length'] = filesize($path);

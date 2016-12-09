@@ -34,11 +34,10 @@ class Api extends ApiController {
     function get_init($hash, $size, $name, $speed=5) {
         Auth::has_authentication('files-upload');
 
-        // TODO: use $path if it is defined
-
         $file = $this->fm->getFileByHash($hash);
-        if (!$file || $file->is_uploaded == '0') {
-            // trash broken file
+
+        // initiate upload if the file has not been uploaded or is missing
+        if (!$file || $file->is_uploaded == '0' || $this->fm->fetchFileMeta($file) == null) {
             if (!$file) {
                 $file = \R::dispense('file');
             }

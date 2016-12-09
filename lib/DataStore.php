@@ -13,9 +13,9 @@ interface DataStore {
     public function init();
 
     /**
-     * returns the file meta data
+     * Returns the file meta data
      * @param  File $file
-     * @return array
+     * @return array the file meta or null if the file content is corrupt or missing.
      */
     public function getMeta(File $file);
 

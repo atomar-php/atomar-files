@@ -60,7 +60,7 @@ class FileManager {
      * Much like fetch_file except it only returns the meta data without the body content
      *
      * @param File $file The file to read
-     * @return mixed Returns the file object on success and FALSE on failure.
+     * @return mixed Returns the file object or null if the file is corrupt or missing.
      */
     public function fetchFileMeta(File $file) {
         $ds = $this->getFileDataStore($file);
@@ -160,9 +160,8 @@ class FileManager {
     }
 
     /**
-     * Looks for an existing file by it's hash.
-     * Hashes for all intents and purposes will identify unique data.
-     * This is not 100% accurate but the odds of a hash collision is absurdly low.
+     * Looks for an existing file by it's content hash.
+     * Note: if you want to check if the file content actually exists on the disk you should use fetchFileMeta()
      *
      * @param string $hash md5 sum of the file
      * @return File the file or null;
