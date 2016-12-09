@@ -168,7 +168,8 @@ class FileManager {
      * @return File the file or null;
      */
     public function getFileByHash(string $hash) {
-        return \R::findOne('file', 'hash=?', array($hash));
+        $file = \R::findOne('file', 'hash=?', array($hash));
+        return $file->box();
     }
 
     /**
