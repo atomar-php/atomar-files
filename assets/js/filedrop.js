@@ -222,7 +222,7 @@
         doneCallback(uploadSpeed);
       } else {
         checkingSpeed = true;
-        check_upload_speed(5, function(avg) {
+        check_upload_speed(1, function(avg) {
           var history = {};
           var d = new Date();
           history.speed = avg;

@@ -26,10 +26,12 @@ class Api extends ApiController {
     /**
      * Initializes an upload from the file drop
      * @param string $hash the md5 sum of the content being uploaded
-     * @param null $path the relative path within the data-store where this file will be saved
+     * @param int $size the size of the file in bytes
+     * @param string $name the name of the file
+     * @param int $speed the speed of the network in kbs. default is 5
      * @return array
      */
-    function get_init($hash, $path=null) {
+    function get_init($hash, $size, $name, $speed=5) {
         Auth::has_authentication('files-upload');
 
         // TODO: use $path if it is defined
@@ -41,20 +43,20 @@ class Api extends ApiController {
                 $file = \R::dispense('file');
             }
 
-            $file->size = $_REQUEST['size']; // file size in bytes
+            $file->size = $size;
             $file->is_uploaded = '0';
 
             // Perform bandwidth profiling
-            $speed = $_REQUEST['speed'] * 1000 / 8.0; // connection speed in kbs converted to bytes/second
-            $min_upload_time = Atomar::get_variable('file_drop_min_upload_time', 10); // give at least 10 seconds to upload
+            $speed = $speed * 1000 / 8.0; // convert to bytes/s
+            $min_upload_time = intval(Atomar::get_variable('file_drop_min_upload_time', 10)); // give at least 10 seconds to upload
             $estimated_upload_time = ceil($file->size / $speed * 2) + $min_upload_time; // seconds .. give twice the estimated time add add the minimum time to allow http overhead and in case their speed changes.
 
             // Pre-populate file data
             $file->hash = $hash;
-            $file->name = $_REQUEST['filename'];
+            $file->name = $name;
             $chunks = explode('.', $file->name);
             $file->ext = strtolower(end($chunks));
-            $file->file_path = $file->hash . '.' . $file->ext; // trim($path, '/') . '/' . // this was prepended here.
+            $file->file_path = $file->hash . '.' . $file->ext;
             $file->name_searchable = str_replace('_', ' ', $file->name);
             $file->created_at = db_date();
             $file->created_by = Auth::$user;
