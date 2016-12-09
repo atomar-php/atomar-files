@@ -19,6 +19,11 @@ class Hooks extends HookReceiver
         return $this->loadRoute($ext, 'public');
     }
 
+    function hookStaticAssets($module)
+    {
+        return $this->loadRoute($module, 'assets');
+    }
+
     function hookLibraries()
     {
         return array (

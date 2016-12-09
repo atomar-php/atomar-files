@@ -1,0 +1,311 @@
+/*.infobox.uploadbox {
+  padding: 15px;
+}*/
+.file-drop {
+  width: 100%;
+  position: relative;
+  color:#5A5A5A;
+  -webkit-transition: background 0.5s;
+  -moz-transition: background 0.5s;
+  -ms-transition: background 0.5s;
+  -o-transition: background 0.5s;
+  transition: background 0.5s;
+  overflow-x: hidden;
+  border: 1px dashed rgba(0, 0, 0, 0.33);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.file-drop #file-select {
+  display:none;
+}
+.file-drop-info {
+  background: transparent url(../img/hand_img.png) no-repeat scroll 0 0;
+  height:50px;
+  margin: 15px;
+  cursor:pointer;
+}
+.file-drop-info:before {
+  content:"Drag and drop files here to upload";
+  font-family:'Helvetica';
+  text-align:left;
+  display:block;
+  vertical-align: middle;
+  font-size: 18px;
+  font-weight: 600;
+  position:relative;
+  left:50px;
+  color:#777;
+}
+.file-drop-info:after {
+  content:"or browse from your computer...";
+  font-family:'Helvetica';
+  text-align:left;
+  display:block;
+  vertical-align: middle;
+  font-size: 14px;
+  font-weight: 600;
+  position:relative;
+  left:50px;
+  color: #73BEE0;
+  text-decoration: underline;
+}
+.file-drop.over {
+  background-color: rgb(229, 242, 255);
+}
+.file-drop .notification {
+  text-align:center;
+  font-size:25px;
+  margin: 10px 0;
+}
+.file-drop .file-drop-progress {
+  width: 100%;
+  height: 15px;
+}
+.file-drop .file .cancel-btn,
+.file-drop .file .delete-btn,
+.file-drop .file .retry-btn {
+  display:none;
+  float:right;
+  cursor: pointer;
+  font-family:Arial;
+  font-size:12px;
+  margin-right:5px;
+}
+.file-drop .file.uploading:hover .cancel-btn,
+.file-drop .file.upload-complete:hover .delete-btn,
+.file-drop .file.uploading:hover .retry-btn {
+  display:inline-block; 
+}
+.file-drop .text-danger {
+  color:#b94a48;
+}
+.file-drop .file .file-drop-progress {
+  height: 5px
+}
+.file-drop .bar {
+  height: 100%;
+  width: 0;
+  background-color: rgb(0, 200, 20);
+}
+.file-drop .bar span {
+  width:100%;
+}
+.file-drop .file-drop-progress-bars {
+  padding: 0;
+}
+.file-drop .file {
+  list-style-type: none;
+  padding: 0;
+  position: relative;
+}
+.file-drop .file:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+@-webkit-keyframes file-drop-progress-bar-stripes {
+  from {
+    background-position: 40px 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+@-moz-keyframes file-drop-progress-bar-stripes {
+  from {
+    background-position: 40px 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+@-ms-keyframes file-drop-progress-bar-stripes {
+  from {
+    background-position: 40px 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+@-o-keyframes file-drop-progress-bar-stripes {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 40px 0;
+  }
+}
+@keyframes file-drop-progress-bar-stripes {
+  from {
+    background-position: 40px 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+.file-drop .file-drop-progress {
+  margin-bottom: 5px;
+  overflow: hidden;
+  background-color: #f7f7f7;
+  background-image: -moz-linear-gradient(top, #f5f5f5, #f9f9f9);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f5f5f5), to(#f9f9f9));
+  background-image: -webkit-linear-gradient(top, #f5f5f5, #f9f9f9);
+  background-image: -o-linear-gradient(top, #f5f5f5, #f9f9f9);
+  background-image: linear-gradient(to bottom, #f5f5f5, #f9f9f9);
+  background-repeat: repeat-x;
+/*  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;*/
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff5f5f5', endColorstr='#fff9f9f9', GradientType=0);
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+     -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+          box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.file-drop .file-drop-progress .bar {
+  width: 0;
+  height: 100%;
+  font-size: 12px;
+  color: #ffffff;
+  text-align: center;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #0e90d2;
+  background-image: -moz-linear-gradient(top, #149bdf, #0480be);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#149bdf), to(#0480be));
+  background-image: -webkit-linear-gradient(top, #149bdf, #0480be);
+  background-image: -o-linear-gradient(top, #149bdf, #0480be);
+  background-image: linear-gradient(to bottom, #149bdf, #0480be);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff149bdf', endColorstr='#ff0480be', GradientType=0);
+  -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+     -moz-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+          box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  -webkit-transition: width 0.6s ease;
+     -moz-transition: width 0.6s ease;
+       -o-transition: width 0.6s ease;
+          transition: width 0.6s ease;
+}
+.file-drop .file-drop-progress-striped .bar {
+  background-color: #149bdf;
+  background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255, 255, 255, 0.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(0.75, rgba(255, 255, 255, 0.15)), color-stop(0.75, transparent), to(transparent));
+  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  -webkit-background-size: 40px 40px;
+     -moz-background-size: 40px 40px;
+       -o-background-size: 40px 40px;
+          background-size: 40px 40px;
+}
+.file-drop .file.success .bar {
+  background-color: #5eb95e;
+  background-image: -moz-linear-gradient(top, #62c462, #57a957);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#62c462), to(#57a957));
+  background-image: -webkit-linear-gradient(top, #62c462, #57a957);
+  background-image: -o-linear-gradient(top, #62c462, #57a957);
+  background-image: linear-gradient(to bottom, #62c462, #57a957);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff62c462', endColorstr='#ff57a957', GradientType=0);
+}
+.file-drop .file-drop-progress.active .bar {
+  -webkit-animation: file-drop-progress-bar-stripes 2s linear infinite;
+     -moz-animation: file-drop-progress-bar-stripes 2s linear infinite;
+      -ms-animation: file-drop-progress-bar-stripes 2s linear infinite;
+       -o-animation: file-drop-progress-bar-stripes 2s linear infinite;
+          animation: file-drop-progress-bar-stripes 2s linear infinite;
+}
+
+.file-drop .file.canceled .file-drop-progress .bar {
+  background-color: #faa732;
+  background-image: -moz-linear-gradient(top, #fbb450, #f89406);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fbb450), to(#f89406));
+  background-image: -webkit-linear-gradient(top, #fbb450, #f89406);
+  background-image: -o-linear-gradient(top, #fbb450, #f89406);
+  background-image: linear-gradient(to bottom, #fbb450, #f89406);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fffbb450', endColorstr='#fff89406', GradientType=0);
+}
+
+.file-drop .file.error .file-drop-progress .bar {
+  background-color: #dd514c;
+  background-image: -moz-linear-gradient(top, #ee5f5b, #c43c35);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ee5f5b), to(#c43c35));
+  background-image: -webkit-linear-gradient(top, #ee5f5b, #c43c35);
+  background-image: -o-linear-gradient(top, #ee5f5b, #c43c35);
+  background-image: linear-gradient(to bottom, #ee5f5b, #c43c35);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffee5f5b', endColorstr='#ffc43c35', GradientType=0);
+}
+.file-drop .file-drop-progress.confirming .bar {
+  background-color: #5eb95e;
+  background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255, 255, 255, 0.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(0.75, rgba(255, 255, 255, 0.15)), color-stop(0.75, transparent), to(transparent));
+  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  -webkit-background-size: 40px 40px;
+     -moz-background-size: 40px 40px;
+       -o-background-size: 40px 40px;
+          background-size: 40px 40px;
+}
+
+.file-drop .file.upload-complete .file-name,
+.file-drop .file.upload-complete .file-size,
+.file-drop .file.upload-complete .file-status {
+  color:#5eb95e;
+}
+.file-drop .file-meta {
+  float:left;
+  font-family:Arial;
+  font-size:12px;
+  display:inline-block;
+  white-space:nowrap;
+  overflow:hidden;
+  margin: 0 15px;
+  cursor:default;
+}
+.file-drop .file-size,
+.file-drop .file-status {
+  font-size:10px;
+  margin-left:5px;
+  color:#999;
+}
+
+.file-drop .check-mark {
+  float:left;
+  padding-left:5px;
+}
+
+.file-drop .glyphicon {
+  display: inline;
+  font-family: 'Glyphicons Halflings';
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+  margin: 0;
+  position: absolute;
+}
+.file-drop .glyphicon-remove:before {
+  content: "\e014";
+}
+
+.file-drop .glyphicon-remove {
+  color: red;
+}
+
+.file-drop .glyphicon-remove:hover {
+  cursor: pointer;
+}
+
+.file-drop .glyphicon-ok:before {
+  content: "\e013";
+}
+
+.file-drop .glyphicon-ok {
+  color: #5eb95e;
+}
+
