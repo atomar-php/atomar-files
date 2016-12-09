@@ -221,12 +221,12 @@ class FileManager {
      */
     public function deploy(string $drop_zone, array $options = array()) {
         // TODO: extension assets are now handled by referencing the namespace
-        Templator::$js[] = Templator::resolve_ext_asset('file_drop/js/spark-md5.min.js');
-        Templator::$js[] = Templator::resolve_ext_asset('file_drop/js/jquery.ui.widget.js');
-        Templator::$js[] = Templator::resolve_ext_asset('file_drop/js/jquery.iframe-transport.js');
-        Templator::$js[] = Templator::resolve_ext_asset('file_drop/js/jquery.fileupload.js');
-        Templator::$js[] = Templator::resolve_ext_asset('file_drop/js/filedrop.js');
-        Templator::$css[] = Templator::resolve_ext_asset('file_drop/css/filedrop.css');
+        Templator::$js[] = '/assets/file_drop/js/spark-md5.min.js';
+        Templator::$js[] = '/assets/file_drop/js/jquery.ui.widget.js';
+        Templator::$js[] = '/assets/file_drop/js/jquery.iframe-transport.js';
+        Templator::$js[] = '/assets/file_drop/js/jquery.fileupload.js';
+        Templator::$js[] = '/assets/file_drop/js/filedrop.js';
+        Templator::$css[] = '/assets/file_drop/css/filedrop.css';
 
         // set forced defaults
         $options['initUploadUrl'] = '/!/file_drop/init';

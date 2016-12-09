@@ -14,6 +14,11 @@ class Hooks extends HookReceiver
         );
     }
 
+    function hookRoute($ext)
+    {
+        return $this->loadRoute($ext, 'public');
+    }
+
     function hookLibraries()
     {
         return array (
