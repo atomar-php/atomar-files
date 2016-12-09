@@ -166,6 +166,7 @@ class Api extends ApiController {
                 set_error('You do not have permission to delete that file');
             }
         }
+        $this->go_back();
     }
 
     function get_upload() {
