@@ -169,7 +169,11 @@ class FileManager {
      */
     public function getFileByHash(string $hash) {
         $file = \R::findOne('file', 'hash=?', array($hash));
-        return $file->box();
+        if($file->id) {
+            return $file->box();
+        } else {
+            return null;
+        }
     }
 
     /**
