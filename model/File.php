@@ -24,6 +24,6 @@ class File extends BeanModel {
         $node->file = $this->bean;
         $model->sharedFilenodeList[] = $node;
         store($model);
-        return $node;
+        return $node->box();
     }
 }

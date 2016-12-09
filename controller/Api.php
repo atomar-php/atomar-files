@@ -65,7 +65,7 @@ class Api extends ApiController {
 
             // store new file
             if (store($file)) {
-                $upload = $this->fm->generateUpload($file, $estimated_upload_time);
+                $upload = $this->fm->generateUpload($file->box(), $estimated_upload_time);
                 $upload_url = '/files/api/upload?token=' . $upload->token;
                 if ($upload_url) {
                     $response = array(
