@@ -221,16 +221,16 @@ class FileManager {
      */
     public function deploy(string $drop_zone, array $options = array()) {
         // TODO: extension assets are now handled by referencing the namespace
-        Templator::$js[] = '/assets/file_drop/js/spark-md5.min.js';
-        Templator::$js[] = '/assets/file_drop/js/jquery.ui.widget.js';
-        Templator::$js[] = '/assets/file_drop/js/jquery.iframe-transport.js';
-        Templator::$js[] = '/assets/file_drop/js/jquery.fileupload.js';
-        Templator::$js[] = '/assets/file_drop/js/filedrop.js';
-        Templator::$css[] = '/assets/file_drop/css/filedrop.css';
+        Templator::$js[] = '/assets/files/js/spark-md5.min.js';
+        Templator::$js[] = '/assets/files/js/jquery.ui.widget.js';
+        Templator::$js[] = '/assets/files/js/jquery.iframe-transport.js';
+        Templator::$js[] = '/assets/files/js/jquery.fileupload.js';
+        Templator::$js[] = '/assets/files/js/filedrop.js';
+        Templator::$css[] = '/assets/files/css/filedrop.css';
 
         // set forced defaults
-        $options['initUploadUrl'] = '/!/file_drop/init';
-        $options['confirmUploadUrl'] = '/!/file_drop/confirm';
+        $options['initUploadUrl'] = '/files/api/init';
+        $options['confirmUploadUrl'] = '/files/api/confirm';
 
         // build option list
         $js_options = array();
