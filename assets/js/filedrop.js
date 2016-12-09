@@ -811,7 +811,7 @@
               self.context.find('.file-meta .file-status').html('Validating data...').removeClass('error');
               $.get(initUploadUrl, {
                 path: targetPath,
-                filename: self.name,
+                name: self.name,
                 hash: hash,
                 speed: uploadSpeed,
                 size: self.size
