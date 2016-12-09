@@ -177,8 +177,7 @@ class Api extends ApiController {
      * @param string $token the upload token
      */
     function post_upload($token) {
-        // TODO: the FileManager should handle fetching an upload object
-        $upload = \R::findOne('fileupload', 'token=?', array($token));
+        $upload = $this->fm->getUpload($token);
         if ($upload) {
             // validate upload
             if (time() - strtotime($upload->created_at) > $upload->ttl) {

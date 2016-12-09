@@ -168,8 +168,23 @@ class FileManager {
      */
     public function getFileByHash(string $hash) {
         $file = \R::findOne('file', 'hash=?', array($hash));
-        if($file->id) {
+        if($file) {
             return $file->box();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Looks up an upload request by it's token
+     * @param string $token the upload token
+     * @return Fileupload
+     */
+    public function getUpload(string $token) {
+        // TRICKY: in case tokens are not unique selected the most recent
+        $upload = \R::findOne('fileupload', 'token=? order by id desc', array($token));
+        if($upload) {
+            return $upload->box();
         } else {
             return null;
         }
