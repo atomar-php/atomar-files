@@ -15,7 +15,7 @@ class LocalDataStore implements DataStore {
     
     public function generateUpload(File $file, int $ttl) {
         $upload = \R::dispense('fileupload');
-        $upload->token = md5($file->file_path . $file->id . $ttl);
+        $upload->token = md5($file->file_path . $file->id . time());
         $upload->file = $file;
         $upload->ttl = $ttl;
         $upload->created_at = db_date();
