@@ -47,7 +47,7 @@ class Api extends ApiController {
 
             // Perform bandwidth profiling
             $speed = $speed * 1000 / 8.0; // convert to bytes/s
-            $min_upload_time = intval(Atomar::get_variable('file_drop_min_upload_time', 10)); // give at least 10 seconds to upload
+            $min_upload_time = intval(Atomar::get_variable('file_drop_min_upload_time', 30)); // give at least 30 seconds to upload
             $estimated_upload_time = ceil($file->size / $speed * 2) + $min_upload_time; // seconds .. give twice the estimated time add add the minimum time to allow http overhead and in case their speed changes.
 
             // Pre-populate file data
@@ -177,21 +177,14 @@ class Api extends ApiController {
      * @param string $token the upload token
      */
     function post_upload($token) {
-        Logger::log_notice('uploading file with token', $token);
         // TODO: the FileManager should handle fetching an upload object
         $upload = \R::findOne('fileupload', 'token=?', array($token));
         if ($upload) {
-            Logger::log_notice('found upload request');
             // validate upload
             if (time() - strtotime($upload->created_at) > $upload->ttl) {
-                Logger::log_warning('Files:PUT: upload expired', array(
-                    'fileupload' => $upload->export(),
-                    'request' => $_REQUEST
-                ));
                 \R::trash($upload);
                 return new UploadError('Upload token has expired');
             }
-            Logger::log_notice('preparing output');
             // prepare output
             $output = Atomar::$config['files'] . $upload->file->file_path;
             $dir = dirname($output);
@@ -199,43 +192,28 @@ class Api extends ApiController {
                 if (!is_dir($dir)) {
                     mkdir($dir, 0770, true);
                 }
-                Logger::log_notice('opening file');
                 // write the file
                 if (!($putdata = fopen("php://input", "r"))) {
-                    Logger::log_error('Files:PUT: failed to get PUT data', array(
-                        'fileupload' => $upload->export(),
-                        'request' => $_REQUEST
-                    ));
                     \R::trash($upload);
                     return new UploadError('Failed to read PUT data');
                 }
-                Logger::log_notice('opening output', $output);
                 if (!($fp = fopen($output, 'w'))) {
-                    Logger::log_error('Files:PUT: failed to open output file', array(
-                        'output' => $output,
-                        'fileupload' => $upload->export(),
-                        'request' => $_REQUEST
-                    ));
                     \R::trash($upload);
                     return new UploadError('Failed to open output file');
                 }
-                Logger::log_notice('writing data');
                 while ($data = fread($putdata, 1024)) {
                     fwrite($fp, $data);
                 }
                 fclose($fp);
                 fclose($putdata);
-                Logger::log_notice('done writing file');
                 \R::trash($upload);
                 return true;
             } catch (\Exception $e) {
                 // likely this is a file system error. e.g. not writable
-                Logger::log_error('CFileDropAPI:PUT: The file could not be created', $e->getMessage());
                 \R::trash($upload);
                 return new UploadError('Failed to write output file');
             }
         } else {
-            Logger::log_warning('CFileDropAPI:PUT: invalid upload request', $_REQUEST);
             return new UploadError('non-registered upload request');
         }
     }
