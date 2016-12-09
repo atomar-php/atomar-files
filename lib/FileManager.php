@@ -25,7 +25,7 @@ class FileManager {
      * Files constructor.
      * @param DataStore $dataStore
      */
-    public function __construct(DataStore $dataStore) {
+    public function __construct(DataStore $dataStore=null) {
         if($dataStore === null) {
             self::$default_ds = new LocalDataStore();
         } else {
