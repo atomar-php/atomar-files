@@ -1,3 +1,4 @@
+var global = {};
 // Requirements: jquery.filedupload.js, jquery.iframe-transport.js, jquery.ui.widget.js, spark-md5.min.js
 
 // Implements https://github.com/blueimp/jQuery-File-Upload
@@ -27,6 +28,54 @@
       return text;
     }
   }
+
+
+//  Saves an object into the local browser storage or in the global variable as a fallback
+    function variableSet(name, value) {
+        if (typeof(Storage) !== 'undefined') {
+            // local storage
+            if (typeof value === 'undefined') {
+                localStorage.removeItem(name);
+            } else {
+                localStorage.setItem(name, JSON.stringify(value));
+            }
+            return true;
+        } else {
+            // fall back to global variable storage
+            if (typeof value === 'undefined') {
+                delete global[name];
+            } else {
+                global[name] = value;
+            }
+            return true;
+        }
+    }
+
+// Retrieves an object from the local browser storage or in the global variable as a fallback.
+    function variableGet(name, defaultValue) {
+        if (typeof(Storage) !== 'undefined') {
+            // local storage
+            var data = localStorage.getItem(name);
+            if (data != null) {
+                return JSON.parse(data);
+            } else if (typeof defaultValue !== 'undefined') {
+                localStorage.setItem(name, defaultValue);
+                return defaultValue;
+            } else {
+                return null;
+            }
+        } else {
+            // fall back to global variable storage
+            if (name in global) {
+                return global[name];
+            } else if (typeof defaultValue !== 'undefined') {
+                global[name] = defaultValue;
+                return defaultValue;
+            } else {
+                return null;
+            }
+        }
+    }
 
   // http://stackoverflow.com/questions/1043957/clearing-input-type-file-using-jquery
   function resetFormElement(e) {
